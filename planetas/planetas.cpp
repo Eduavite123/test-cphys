@@ -43,9 +43,39 @@ int main(){
 
     //-----------------CONDICIONES INICIALES------------------------
     //lectura de ficheros con condiciones iniciales de r, m y v
-    read_file(m, "m_ini.txt");
+    /* read_file(m, "m_ini.txt");
     read_file(x, "r_ini.txt");
-    read_file(vy, "v_ini.txt");
+    read_file(vy, "v_ini.txt"); */
+
+    m[0]=1.99e30;
+    m[1]=0.330e24;
+    m[2]=4.87e24;
+    m[3]=5.97e24;
+    m[4]=0.642e24;
+    m[5]=1898.0e24;
+    m[6]=568.0e24;
+    m[7]=86.8e24;
+    m[8]=102e24;
+
+    x[0]=0;
+    x[1]=57.9e6;
+    x[2]=108.2e6;
+    x[3]=149.6e6;
+    x[4]=228.0e6;
+    x[5]=778.5e6;
+    x[6]=1432.0e6;
+    x[7]=2867.0e6;
+    x[8]=4515.0e6;
+
+    vy[0]=0;
+    vy[1]=47.4;
+    vy[2]=35.0;
+    vy[3]=29.8;
+    vy[4]=24.1;
+    vy[5]=13.1;
+    vy[6]=9.7;
+    vy[7]=6.8;
+    vy[8]=5.4;
 
     //Reescalado
     for (int i = 0; i < 9; i++)
@@ -57,26 +87,19 @@ int main(){
 
     //Calculamos las aceleraciones iniciales
     acel(ax, x, y, m, 1); 
-    acel(ay,x,y,m,2);
     //---------------------------------------------------------------
+
+    //BORRAR CUANDO FUNCIONE
+    for (int i = 0; i < 9; i++)
+    {
+        cout << m[i] << endl;
+    }
     
-    //BORRAR CUANDO FUNCIONE
-    cout << endl;
-    for (int i = 0; i < 9; i++)
-    {
-        cout << ax[i] << endl;
-    }
-    cout << endl;
-    //BORRAR CUANDO FUNCIONE
-    for (int i = 0; i < 9; i++)
-    {
-        cout << ay[i] << endl;
-    }
 
     //--------------------------ALGORITMO DE VERLET-------------------------
     ofstream fich;
     fich.open("r_gif.txt");
-    fich << "X          Y" << endl;
+    fich << "X  Y" << endl;
     for (k = 0; k<inter; k++)
     {
         if (k!=1)
@@ -165,7 +188,7 @@ return;
 void pos(double r[9], double v[9], double a[9], int hop){
     for (int i = 0; i < 9; i++)
     {
-        r[i]=r[i]+hop*v[i]+(pow(hop,2)/2)*a[i];
+        r[i]=r[i]+hop*v[i]+(pow(hop,2)/2.0)*a[i];
     }
     return;
 }
@@ -174,7 +197,7 @@ void pos(double r[9], double v[9], double a[9], int hop){
 void aux(double aux[9], double v[9], double a[9], int hop){
     for (int i = 0; i < 9; i++)
     {
-        aux[i]=v[i]+hop/2*a[i];
+        aux[i]=v[i]+hop/2.0*a[i];
     }
     return;
 }
@@ -183,7 +206,7 @@ void aux(double aux[9], double v[9], double a[9], int hop){
 void vel(double v[9], double aux[9], double a[9], int hop){
     for (int i = 0; i < 9; i++)
     {
-        v[i]=aux[9]+hop/2*a[i];   
+        v[i]=aux[9]+hop/2.0*a[i];   
     }
     return;
 }
