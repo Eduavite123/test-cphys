@@ -10,7 +10,7 @@ using namespace std;
 
 void read_file(double vec[9], string nombre_archivo);
 double modulo(double rx, double ry);
-void acel(double a[9], double rx[9], double ry[9], double mass[9], int xoy);
+void acel(double a[9], double r[9], double raux[9], double mass[9]);
 void pos(double r[9], double v[9], double a[9], int hop);
 void aux(double aux[9], double v[9], double a[9], int hop);
 void vel(double v[9], double aux[9], double a[9], int hop);
@@ -37,8 +37,8 @@ int main(){
     cout << "¿Cuántos segundos durarán los pasos temporales?" << endl;
     cin >> h; */
     h=0.01;
-    tmax=1000;
-    inter=5;//inter=tmax/h; 
+    tmax=50;
+    inter=tmax/h; 
     //----------------------------------------------------------------
 
     //-----------------CONDICIONES INICIALES------------------------
@@ -86,48 +86,36 @@ int main(){
     }    
 
     //Calculamos las aceleraciones iniciales
-    acel(ax, x, y, m, 1); 
+    acel(ax, x, y, m); 
     //---------------------------------------------------------------
-
-    //BORRAR CUANDO FUNCIONE
-    for (int i = 0; i < 9; i++)
-    {
-        cout << m[i] << endl;
-    }
-    
 
     //--------------------------ALGORITMO DE VERLET-------------------------
     ofstream fich;
-    fich.open("r_gif.txt");
-    fich << "X  Y" << endl;
+    fich.open("planets_data.dat");
     for (k = 0; k<inter; k++)
     {
-        if (k!=1)
-        {
-            fich << "t=" << t << endl;
-        }
-        
-        //-.-.-.-.-.-.-.-.-.COMPONENTE X.-.-.-.-.-.-.-.-.-.-.-.-.
-        pos(x,vx,ax,h);
-        aux(wx,vx,ax,h);
-        acel(ax,x,y,m,1);
-        vel(vx,wx,ax,h);
-        //-.-..-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
-
-        //-.-.-.-.-.-.-.-.-.COMPONENTE Y.-.-.-.-.-.-.-.-.-.-.-.-.
-        pos(y,vy,ay,h);
-        aux(wy,vy,ay,h);
-        acel(ay,x,y,m,2);
-        vel(vy,wy,ay,h);
-        //-.-..-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
-
-        t=t+h;
-
         //escribir los valores de x e y en un fichero
         for (int i = 0; i < 9; i++)
         {
-            fich << x[i] << "   " << y[i] << endl;
+            fich << x[i] << ", " << y[i] << endl;
         }
+        fich << endl;
+
+        t=t+h;
+
+        pos(x,vx,ax,h);
+        pos(y,vy,ay,h);
+
+        aux(wx,vx,ax,h);
+        aux(wy,vy,ay,h);
+        
+        acel(ax,x,y,m);
+        acel(ay,y,x,m);
+        
+        vel(vx,wx,ax,h);
+        vel(vy,wy,ay,h);
+
+        cout << ax[1] << endl;
 
     }
     fich.close();
@@ -149,46 +137,32 @@ void read_file(double vec[9], string nombre_archivo){
 }
 
 //calcula el módulo de un vector
-double modulo(double rx, double ry){
-double mod;
-mod=sqrt(pow(rx,2)+pow(ry,2));
-return mod;
+double modulo(double rx, double ry)
+{
+    double mod;
+    mod=sqrt(pow(rx,2)+pow(ry,2));
+    return mod;
 }
 
 /*calcula una componente de la aceleracion a partir de la suma de fuerzas que se 
 ejercen sobre cada planeta i*/
-void acel(double a[9], double rx[9], double ry[9], double mass[9], int xoy){ //1=x, 2=y
-/*Variable xoy: Introduce 1 si quiere calcular la componente x, 2 para la componente y*/
-int j=0;
-if(xoy==1){
+void acel(double a[9], double r[9], double raux[9], double mass[9]){
+    int j=0;
     for (int i = 0; i < 9; i++)
     {
-    if (i!=j)
-    {
-        a[i]=a[i]-mass[j]*((rx[i]-rx[j]))/(pow(modulo(rx[i]-rx[j],ry[i]-ry[j]),3));
+        if (i!=j)
+        {
+        a[i]=a[i]-mass[j]*((r[i]-r[j]))/(pow(modulo(r[i]-r[j],raux[i]-raux[j]),3));
+        }
     }
-    }
-}
-else if(xoy==2){
-    for (int i = 0; i < 9; i++)
-    {
-    if (i!=j)
-    {
-        a[i]=a[i]-mass[j]*((ry[i]-ry[j]))/(pow(modulo(rx[i]-rx[j],ry[i]-ry[j]),3));
-    }
-    }
-}
-else{
-    cout << "Introduzca un valor correcto en la función acel (1=x, 2=y).";
-}
-return;
+    return;
 }
 
 //evalúa una componente de la dirección r según el algoritmo de Verlet
 void pos(double r[9], double v[9], double a[9], int hop){
     for (int i = 0; i < 9; i++)
     {
-        r[i]=r[i]+hop*v[i]+(pow(hop,2)/2.0)*a[i];
+        r[i]=r[i]+hop*v[i]+(hop*hop/2.0)*a[i];
     }
     return;
 }
@@ -206,7 +180,7 @@ void aux(double aux[9], double v[9], double a[9], int hop){
 void vel(double v[9], double aux[9], double a[9], int hop){
     for (int i = 0; i < 9; i++)
     {
-        v[i]=aux[9]+hop/2.0*a[i];   
+        v[i]=aux[i]+hop/2.0*a[i];   
     }
     return;
 }
