@@ -147,7 +147,7 @@ double modulo(double rx, double ry)
 /*calcula una componente de la aceleracion a partir de la suma de fuerzas que se 
 ejercen sobre cada planeta i*/
 void acel(double a[9], double r[9], double raux[9], double mass[9]){
-    int j=0;
+    int i, j=0;
     for (int i = 0; i < 9; i++)
     {
         if (i!=j)
@@ -160,7 +160,8 @@ void acel(double a[9], double r[9], double raux[9], double mass[9]){
 
 //evalúa una componente de la dirección r según el algoritmo de Verlet
 void pos(double r[9], double v[9], double a[9], int hop){
-    for (int i = 0; i < 9; i++)
+    int i;
+    for (i = 0; i < 9; i++)
     {
         r[i]=r[i]+hop*v[i]+(hop*hop/2.0)*a[i];
     }
@@ -169,7 +170,8 @@ void pos(double r[9], double v[9], double a[9], int hop){
 
 //evalúa vector auxiliar que se usará para evaluar la velocidad
 void aux(double aux[9], double v[9], double a[9], int hop){
-    for (int i = 0; i < 9; i++)
+    int i;
+    for (i = 0; i < 9; i++)
     {
         aux[i]=v[i]+hop/2.0*a[i];
     }
@@ -178,7 +180,8 @@ void aux(double aux[9], double v[9], double a[9], int hop){
 
 ////evalúa una componente de la velocidad v según el algoritmo de Verlet
 void vel(double v[9], double aux[9], double a[9], int hop){
-    for (int i = 0; i < 9; i++)
+    int i;
+    for (i = 0; i < 9; i++)
     {
         v[i]=aux[i]+hop/2.0*a[i];   
     }
