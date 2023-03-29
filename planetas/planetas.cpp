@@ -43,39 +43,14 @@ int main(){
 
     //-----------------CONDICIONES INICIALES------------------------
     //lectura de ficheros con condiciones iniciales de r, m y v
-    /* read_file(m, "m_ini.txt");
+    read_file(m, "m_ini.txt");
     read_file(x, "r_ini.txt");
-    read_file(vy, "v_ini.txt"); */
+    read_file(vy, "v_ini.txt"); 
 
-    m[0]=1.99e30;
-    m[1]=0.330e24;
-    m[2]=4.87e24;
-    m[3]=5.97e24;
-    m[4]=0.642e24;
-    m[5]=1898.0e24;
-    m[6]=568.0e24;
-    m[7]=86.8e24;
-    m[8]=102e24;
-
-    x[0]=0;
-    x[1]=57.9e6;
-    x[2]=108.2e6;
-    x[3]=149.6e6;
-    x[4]=228.0e6;
-    x[5]=778.5e6;
-    x[6]=1432.0e6;
-    x[7]=2867.0e6;
-    x[8]=4515.0e6;
-
-    vy[0]=0;
-    vy[1]=47.4;
-    vy[2]=35.0;
-    vy[3]=29.8;
-    vy[4]=24.1;
-    vy[5]=13.1;
-    vy[6]=9.7;
-    vy[7]=6.8;
-    vy[8]=5.4;
+    for (int i = 0; i < 9; i++)
+    {
+        cout << x[i] << endl;
+    }
 
     //Reescalado
     for (int i = 0; i < 9; i++)
@@ -115,7 +90,10 @@ int main(){
         vel(vx,wx,ax,h);
         vel(vy,wy,ay,h);
 
-        cout << ax[1] << endl;
+        for (int i = 0; i < 9; i++)
+        {
+        cout << x[i] << endl;
+        }
 
     }
     fich.close();
