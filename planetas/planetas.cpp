@@ -6,14 +6,14 @@ using namespace std;
 
 #define Ms 1.99e30 //kg
 #define c 1.5e8 //km
-#define G 6.67e-11 
+#define G 6.67e-20 
 
-void read_file(double vec[9], string nombre_archivo);
+void read_file(double (&vec)[9], string nombre_archivo);
 double modulo(double rx, double ry);
-void acel(double a[9], double r[9], double raux[9], double mass[9]);
-void pos(double r[9], double v[9], double a[9], int hop);
-void aux(double aux[9], double v[9], double a[9], int hop);
-void vel(double v[9], double aux[9], double a[9], int hop);
+void acel(double (&a)[9], double r[9], double raux[9], double mass[9]);
+void pos(double (&r)[9], double v[9], double a[9], float hop);
+void aux(double (&aux)[9], double v[9], double a[9], float hop);
+void vel(double (&v)[9], double aux[9], double a[9], float hop);
 
 //programa que representa el sistema solar
 int main(){
@@ -27,7 +27,7 @@ int main(){
     double wx[9]={0}, wy[9]={0}; //auxiliar para calcular la velocidad
     int k=0; //contadores
     float t=0, tmax, h; //tiempo y salto h
-    int inter; //numero de iteraciones
+    long inter; //numero de iteraciones
     //------------------------------------------------------------------------------------
 
     //--------------CÁLCULO DEL NÚMERO DE ITERACIONES-----------------
@@ -36,8 +36,8 @@ int main(){
     tmax=tmax*365*24*60*60; //tiempo en segundos
     cout << "¿Cuántos segundos durarán los pasos temporales?" << endl;
     cin >> h; */
-    h=0.01;
-    tmax=50;
+    h=0.1;
+    tmax=100;
     inter=tmax/h; 
     //----------------------------------------------------------------
 
@@ -46,11 +46,6 @@ int main(){
     read_file(m, "m_ini.txt");
     read_file(x, "r_ini.txt");
     read_file(vy, "v_ini.txt"); 
-
-    for (int i = 0; i < 9; i++)
-    {
-        cout << x[i] << endl;
-    }
 
     //Reescalado
     for (int i = 0; i < 9; i++)
@@ -90,11 +85,6 @@ int main(){
         vel(vx,wx,ax,h);
         vel(vy,wy,ay,h);
 
-        for (int i = 0; i < 9; i++)
-        {
-        cout << x[i] << endl;
-        }
-
     }
     fich.close();
     //----------------------------------------------------------------------
@@ -103,7 +93,7 @@ int main(){
 }
 
 //lee ficheros con condiciones iniciales
-void read_file(double vec[9], string nombre_archivo){
+void read_file(double (&vec)[9], string nombre_archivo){
     ifstream fich;
     fich.open(nombre_archivo);
     for (int i = 0; i<9; i++)
@@ -124,20 +114,23 @@ double modulo(double rx, double ry)
 
 /*calcula una componente de la aceleracion a partir de la suma de fuerzas que se 
 ejercen sobre cada planeta i*/
-void acel(double a[9], double r[9], double raux[9], double mass[9]){
-    int i, j=0;
-    for (int i = 0; i < 9; i++)
+void acel(double (&a)[9], double r[9], double raux[9], double mass[9]){
+    int i=0, j=0;
+    for (i = 0; i < 9; i++)
     {
-        if (i!=j)
+        for (j = 0; j < 9; j++)
         {
-        a[i]=a[i]-mass[j]*((r[i]-r[j]))/(pow(modulo(r[i]-r[j],raux[i]-raux[j]),3));
+            if (i!=j)
+            {
+                a[i]=a[i]-mass[j]*((r[i]-r[j]))/(pow(modulo(r[i]-r[j],raux[i]-raux[j]),3));
+            }
         }
     }
     return;
 }
 
 //evalúa una componente de la dirección r según el algoritmo de Verlet
-void pos(double r[9], double v[9], double a[9], int hop){
+void pos(double (&r)[9], double v[9], double a[9], float hop){
     int i;
     for (i = 0; i < 9; i++)
     {
@@ -147,7 +140,7 @@ void pos(double r[9], double v[9], double a[9], int hop){
 }
 
 //evalúa vector auxiliar que se usará para evaluar la velocidad
-void aux(double aux[9], double v[9], double a[9], int hop){
+void aux(double (&aux)[9], double v[9], double a[9], float hop){
     int i;
     for (i = 0; i < 9; i++)
     {
@@ -157,7 +150,7 @@ void aux(double aux[9], double v[9], double a[9], int hop){
 }
 
 ////evalúa una componente de la velocidad v según el algoritmo de Verlet
-void vel(double v[9], double aux[9], double a[9], int hop){
+void vel(double (&v)[9], double aux[9], double a[9], float hop){
     int i;
     for (i = 0; i < 9; i++)
     {
