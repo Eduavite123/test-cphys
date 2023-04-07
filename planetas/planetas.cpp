@@ -14,6 +14,7 @@ void acel(double (&a)[9], double r[9], double raux[9], double mass[9]);
 void pos(double (&r)[9], double v[9], double a[9], float hop);
 void aux(double (&aux)[9], double v[9], double a[9], float hop);
 void vel(double (&v)[9], double aux[9], double a[9], float hop);
+double ener(double mass[9], double vx[9], double vy[9], double x[9], double y[9]);
 
 //programa que representa el sistema solar
 int main(){
@@ -25,6 +26,7 @@ int main(){
     double vx[9]={0}, vy[9]={0}; //velocidad por componentes
     double ax[9]={0}, ay[9]={0}; //aceleración por componentes
     double wx[9]={0}, wy[9]={0}; //auxiliar para calcular la velocidad
+    double e=0; //energia total del sistema
     int k=0; //contadores
     float t=0, tmax, h; //tiempo y salto h
     long inter; //numero de iteraciones
@@ -37,7 +39,7 @@ int main(){
     cout << "¿Cuántos segundos durarán los pasos temporales?" << endl;
     cin >> h; */
     h=0.1;
-    tmax=100;
+    tmax=50;
     inter=tmax/h; 
     //----------------------------------------------------------------
 
@@ -60,16 +62,18 @@ int main(){
     //---------------------------------------------------------------
 
     //--------------------------ALGORITMO DE VERLET-------------------------
-    ofstream fich;
-    fich.open("planets_data.dat");
+    ofstream posi;
+    ofstream energia;
+    posi.open("planets_data.dat");
+    energia.open("energia.dat");
     for (k = 0; k<inter; k++)
     {
         //escribir los valores de x e y en un fichero
         for (int i = 0; i < 9; i++)
         {
-            fich << x[i] << ", " << y[i] << endl;
+            posi << x[i] << ", " << y[i] << endl;
         }
-        fich << endl;
+        posi << endl;
 
         t=t+h;
 
@@ -78,6 +82,12 @@ int main(){
 
         aux(wx,vx,ax,h);
         aux(wy,vy,ay,h);
+
+        for (int i = 0; i < 9; i++)
+        {
+            ax[i]=0;
+            ay[i]=0;
+        }
         
         acel(ax,x,y,m);
         acel(ay,y,x,m);
@@ -85,8 +95,14 @@ int main(){
         vel(vx,wx,ax,h);
         vel(vy,wy,ay,h);
 
+        e=ener(m,vx,vy,x,y);
+        //escribir los valores de la energía en un fichero
+        energia << t << " " << e << endl;
+        e=0;
+
     }
-    fich.close();
+    posi.close();
+    energia.close();
     //----------------------------------------------------------------------
 
     return 0;
@@ -157,4 +173,21 @@ void vel(double (&v)[9], double aux[9], double a[9], float hop){
         v[i]=aux[i]+hop/2.0*a[i];   
     }
     return;
+}
+
+//Calcula la energía total del sistema en un instante de tiempo
+double ener(double mass[9], double vx[9], double vy[9], double rx[9], double ry[9]){
+    double e=0, pot=0;
+    for (int i = 0; i < 9; i++)
+    {
+        for (int j = 0; j < 9; j++)
+        {
+            if (i!=j)
+            {
+                pot=pot-mass[j]*mass[i]/modulo(rx[i]-rx[j],ry[i]-ry[j]);
+            }
+        }
+        e=e+0.5*mass[i]*(vx[i]*vx[i]+vy[i]*vy[i])+pot;
+    }
+    return e;
 }
