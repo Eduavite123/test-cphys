@@ -30,16 +30,15 @@ int main(){
     int k=0; //contadores
     float t=0, tmax, h; //tiempo y salto h
     long inter; //numero de iteraciones
+    int p[9]={0};         //se usarán para el 
+    double peraux[9]={0}; //cálculo de periodos
     //------------------------------------------------------------------------------------
 
     //--------------CÁLCULO DEL NÚMERO DE ITERACIONES-----------------
-    /* cout << "¿Cuántos años durará la animación?" << endl;
-    cin >> tmax;
-    tmax=tmax*365*24*60*60; //tiempo en segundos
-    cout << "¿Cuántos segundos durarán los pasos temporales?" << endl;
-    cin >> h; */
-    h=0.1;
-    tmax=50;
+    h=0.1; //Salto de tiempo ideal para que la aproximación 
+           //sea adecuada y no haya muchas iteraciones
+    tmax=1036; //Usando la conversión de tiempo, esta es la tmax necesaria 
+               //para que Urano haga un periodo completo
     inter=tmax/h; 
     //----------------------------------------------------------------
 
@@ -64,8 +63,10 @@ int main(){
     //--------------------------ALGORITMO DE VERLET-------------------------
     ofstream posi;
     ofstream energia;
+    ofstream period;
     posi.open("planets_data.dat");
     energia.open("energia.dat");
+    period.open("period.txt");
     for (k = 0; k<inter; k++)
     {
         //escribir los valores de x e y en un fichero
@@ -75,7 +76,7 @@ int main(){
         }
         posi << endl;
 
-        t=t+h;
+        t=t+h; //siguiente fotograma de la animación
 
         pos(x,vx,ax,h);
         pos(y,vy,ay,h);
@@ -83,6 +84,7 @@ int main(){
         aux(wx,vx,ax,h);
         aux(wy,vy,ay,h);
 
+        //reiniciamos las aceleraciones para que no se acumulen
         for (int i = 0; i < 9; i++)
         {
             ax[i]=0;
@@ -95,14 +97,41 @@ int main(){
         vel(vx,wx,ax,h);
         vel(vy,wy,ay,h);
 
+        //-.-.-.-.-.-ENERGÍA-.-.-.-.-.-.-
         e=ener(m,vx,vy,x,y);
-        //escribir los valores de la energía en un fichero
+        //escribimos los valores de la energía en un fichero
         energia << t << " " << e << endl;
         e=0;
+        //-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
 
+        //-.-.-.-.-.-Cálculo de periodos orbitales-.-.-.-.-.-.-.-
+        for (int i = 1; i < 9; i++) //no contamos al Sol, no orbita
+        {
+            if (p[i]==0) //evitamos que calcule el periodo más de una vez
+            {
+                //peraux guarda la 'y' de la iteración anterior
+                //Comparamos la 'y' de la iteración anterior con la 'y' actual.
+                /*Si 'y' pasa de negativo a positivo y 'x' es positivo, el planeta 
+                ha pasado por su condición inicial*/
+                if (peraux[i]<0 && y[i]>0 && x[i]>0)
+                {
+                    p[i]=1; //El planeta ya ha dado una vuelta
+                    //Escribimos el periodo en un fichero
+                    // revertimos la conversión de tiempo y expresamos el periodo en años
+                    period << "Periodo del planeta " << i << ": " << t*58.1/365 << " años" << endl;
+                } 
+            }
+            if (k>0)
+            {
+                peraux[i]=y[i]; //almacenamos la 'y' de la iteración anterior
+            }
+        }        
+        //-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+        
     }
     posi.close();
     energia.close();
+    period.close();
     //----------------------------------------------------------------------
 
     return 0;

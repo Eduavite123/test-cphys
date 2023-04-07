@@ -1,0 +1,8 @@
+Periodo real del planeta 1(Mercurio): 0.2408 años
+Periodo real del planeta 2(Venus): 0.6152 años
+Periodo real del planeta 3(Tierra): 1 años
+Periodo real del planeta 4(Marte): 1.8809 años
+Periodo real del planeta 5(Júpiter): 11.862 años
+Periodo real del planeta 6(Saturno): 29.458 años
+Periodo real del planeta 7(Urano): 84.01 años
+Periodo real del planeta 8(Neptuno): 164.79 años

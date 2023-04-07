@@ -1,0 +1,8 @@
+Periodo del planeta 1: 0.254685 años
+Periodo del planeta 2: 0.620794 años
+Periodo del planeta 3: 1.00282 años
+Periodo del planeta 4: 1.8783 años
+Periodo del planeta 5: 11.9064 años
+Periodo del planeta 6: 29.9099 años
+Periodo del planeta 7: 82.3302 años
+Periodo del planeta 8: 160.754 años
