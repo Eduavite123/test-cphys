@@ -1,2 +1,2 @@
 # test-cphys
-prueba clase
+Física Computacional 2022-2023
