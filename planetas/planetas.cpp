@@ -37,8 +37,8 @@ int main(){
     //--------------CÁLCULO DEL NÚMERO DE ITERACIONES-----------------
     h=0.1; //Salto de tiempo ideal para que la aproximación 
            //sea adecuada y no haya muchas iteraciones
-    tmax=1036; //Usando la conversión de tiempo, esta es la tmax necesaria 
-               //para que Urano haga un periodo completo
+    tmax=1036; //Usando la conversión de tiempo, la tmax necesaria 
+               //para que Urano haga un periodo completo es 1036
     inter=tmax/h; 
     //----------------------------------------------------------------
 
