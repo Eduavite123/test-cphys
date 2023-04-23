@@ -26,9 +26,10 @@ int main(){
 
     //----------------------VALORES INICIALES------------------------------------------
     //(0:todos alineados, 1:desalineados aleatoriamente)
-    temp=4; //(entre 0 y 5) 
-    N=10; //tamaño de la red
-    choose=0; //0 o 1. Si temp alta conviene choose=0, si temp baja conviene choose=1
+    temp=1; //(entre 0 y 5) 
+    N=20; //tamaño de la red
+    choose=1; //0=alineados ; 1=desalineados
+              //Si temp alta conviene choose=0, si temp baja conviene choose=1
     con_ini(choose,s,N);      
     iter=500; 
     //---------------------------------------------------------------------------------
@@ -38,6 +39,17 @@ int main(){
     spin.open("ising_data.dat");
     for (int k = 0; k < iter; k++)
     {
+        //Escribimos espines en archivo
+        for (int i = 0; i < N; i++)
+        {
+            for (int j = 0; j < N-1; j++)
+            {
+                spin << s[i][j] << ", ";
+            }
+            spin << s[i][N-1] << endl;   
+        }
+        spin << endl;
+
         //srand(time(NULL));//cambiamos la semilla cada iteración para mejorar la aleatoriedad
         for (int l = 0; l < N*N; l++)
         {
@@ -61,16 +73,6 @@ int main(){
             }
             
         }
-
-        for (int i = 0; i < N; i++)
-        {
-            for (int j = 0; j < N-1; j++)
-            {
-                spin << s[i][j] << ", ";
-            }
-            spin << s[n][N-1] << endl;   
-        }
-        spin << endl;
     }
     spin.close();
     //---------------------------------------------------------------------------------
@@ -106,24 +108,24 @@ void con_ini(int choose, int s[][MAX], int N){
 
 int delta_E(int s[][MAX], int n, int m, int N){
     int dE;
-    if (n!=N-1 && m!=N-1 && n!=0 && m!=0) //si no está en ningún borde
+    if (n!=(N-1) && m!=(N-1) && n!=0 && m!=0) //si no está en ningún borde
     {
         dE=2*s[n][m]*(s[n+1][m]+s[n-1][m]+s[n][m+1]+s[n][m-1]);
     }
     //CONDICIONES DE CONTORNO PERIÓDICAS
-    else if (n==0 && m!=0 && m!=N-1) //borde superior sin esquinas
+    else if (n==0 && m!=0 && m!=(N-1)) //borde superior sin esquinas
     {
         dE=2*s[n][m]*(s[n+1][m]+s[N-1][m]+s[n][m+1]+s[n][m-1]);
     }
-    else if (n==N-1 && m!=0 && m!=N-1) //borde inferior sin esquinas
+    else if (n==(N-1) && m!=0 && m!=(N-1)) //borde inferior sin esquinas
     {
         dE=2*s[n][m]*(s[0][m]+s[n-1][m]+s[n][m+1]+s[n][m-1]);
     }
-    else if (m==0 && n!=0 && n!=N-1) //borde izquierdo sin esquinas
+    else if (m==0 && n!=0 && n!=(N-1)) //borde izquierdo sin esquinas
     {
         dE=2*s[n][m]*(s[n+1][m]+s[n-1][m]+s[n][m+1]+s[n][N-1]);
     }
-    else if (m==N-1 && n!=0 && n!=N-1) //borde derecho sin esquinas
+    else if (m==(N-1) && n!=0 && n!=(N-1)) //borde derecho sin esquinas
     {
         dE=2*s[n][m]*(s[n+1][m]+s[n-1][m]+s[n][0]+s[n][m-1]);
     }
@@ -131,15 +133,15 @@ int delta_E(int s[][MAX], int n, int m, int N){
     {
         dE=2*s[n][m]*(s[n+1][m]+s[N-1][m]+s[n][m+1]+s[n][N-1]);
     }
-    else if (n==0 && m==N-1) //esquina superior derecha
+    else if (n==0 && m==(N-1)) //esquina superior derecha
     {
         dE=2*s[n][m]*(s[n+1][m]+s[N-1][m]+s[n][0]+s[n][m-1]);
     }
-    else if (n==N-1 && m==0) //esquina inferior izquierda
+    else if (n==(N-1) && m==0) //esquina inferior izquierda
     {
         dE=2*s[n][m]*(s[0][m]+s[n-1][m]+s[n][m+1]+s[n][N-1]);
     }
-    else if (n==N-1 && m==N-1) //esquina inferior derecha
+    else if (n==(N-1) && m==(N-1)) //esquina inferior derecha
     {
         dE=2*s[n][m]*(s[0][m]+s[n-1][m]+s[n][0]+s[n][m-1]);
     }
