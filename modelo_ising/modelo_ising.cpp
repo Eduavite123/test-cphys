@@ -26,8 +26,8 @@ int main(){
 
     //----------------------VALORES INICIALES------------------------------------------
     //(0:todos alineados, 1:desalineados aleatoriamente)
-    temp=1; //(entre 0 y 5) 
-    N=20; //tamaño de la red
+    temp=0.1; //(entre 0 y 5) 
+    N=50; //tamaño de la red
     choose=1; //0=alineados ; 1=desalineados
               //Si temp alta conviene choose=0, si temp baja conviene choose=1
     con_ini(choose,s,N);      
@@ -145,6 +145,7 @@ int delta_E(int s[][MAX], int n, int m, int N){
     {
         dE=2*s[n][m]*(s[0][m]+s[n-1][m]+s[n][0]+s[n][m-1]);
     }
+    return dE;
 }
 
 double min(int dE, double temp){
