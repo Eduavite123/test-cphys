@@ -5,7 +5,7 @@
 #include <fstream>
 using namespace std;
 
-#define MAX 100
+#define MAX 500
 
 void con_ini(int choose, int s[][MAX], int N);
 int delta_E(int s[][MAX], int n, int m, int N);
@@ -26,17 +26,17 @@ int main(){
 
     //----------------------VALORES INICIALES------------------------------------------
     //(0:todos alineados, 1:desalineados aleatoriamente)
-    temp=0.1; //(entre 0 y 5) 
-    N=50; //tamaño de la red
+    temp=0.001; //(entre 0 y 5) 
+    N=100; //tamaño de la red
     choose=1; //0=alineados ; 1=desalineados
               //Si temp alta conviene choose=0, si temp baja conviene choose=1
     con_ini(choose,s,N);      
-    iter=500; 
+    iter=1000; 
     //---------------------------------------------------------------------------------
 
     //----------------------------MODELO DE ISING--------------------------------------
     ofstream spin;
-    spin.open("ising_data.dat");
+    spin.open("ising_data.txt");
     for (int k = 0; k < iter; k++)
     {
         //Escribimos espines en archivo
@@ -50,7 +50,6 @@ int main(){
         }
         spin << endl;
 
-        //srand(time(NULL));//cambiamos la semilla cada iteración para mejorar la aleatoriedad
         for (int l = 0; l < N*N; l++)
         {
             //elegir nodo al azar
