@@ -26,12 +26,12 @@ int main(){
 
     //----------------------VALORES INICIALES------------------------------------------
     //(0:todos alineados, 1:desalineados aleatoriamente)
-    temp=0.001; //(entre 0 y 5) 
-    N=100; //tamaño de la red
+    temp=0.1; //(entre 0 y 5) 
+    N=64; //tamaño de la red
     choose=1; //0=alineados ; 1=desalineados
               //Si temp alta conviene choose=0, si temp baja conviene choose=1
     con_ini(choose,s,N);      
-    iter=1000; 
+    iter=500; 
     //---------------------------------------------------------------------------------
 
     //----------------------------MODELO DE ISING--------------------------------------
@@ -150,6 +150,6 @@ int delta_E(int s[][MAX], int n, int m, int N){
 double min(int dE, double temp){
     double e;
     e=exp(-dE*1.0/temp);
-    if (1<=e) return 1;
+    if (1.0<e) return 1.0;
     else return e;
 }
