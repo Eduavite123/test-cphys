@@ -3,14 +3,14 @@
 #include <complex>
 #include <fstream>
 
-#define MAX 1000
+#define MAX 200
 #define PI 3.14159265
 
 using namespace std;
 
 int main(){
     //------------------------DECLARACION DE VARIABLES-------------------------------------
-    complex<double> phi[MAX][MAX]; //Solución ec. Schrodinger     ¡¡¡Dim máxima por determinar!!!
+    complex<double> phi[MAX]; //Solución ec. Schrodinger     ¡¡¡Dim máxima por determinar!!!
     int j,n; //posición y tiempo
     int t; //Tiempo máximo
     //Asumimos los parámetros de discretización espacial y temporal h=1 y s=1, respectivamente
@@ -25,7 +25,7 @@ int main(){
     double k_0; //Proporcional a la altura del potencial 
     double V[MAX]; //Potencial según posición
     //Parámetros para la resolución del sistema de ecuaciones
-    complex<double> alpha[MAX], A_neg, A_0[MAX], A_pos, gamma[MAX], beta[MAX][MAX], b[MAX][MAX], xi[MAX][MAX];
+    complex<double> alpha[MAX], A_neg, A_0[MAX], A_pos, gamma[MAX], beta[MAX], b[MAX], xi[MAX];
     complex<double> i (0.0,1.0); 
     //-------------------------------------------------------------------------------------
 
@@ -49,8 +49,8 @@ int main(){
     }
 
     //Condiciones de contorno:
-    phi[0][0]=0;
-    phi[N][0]=0;
+    phi[0]=0.0;
+    phi[N]=0.0;
     //Asumimos la función de onda inicial como una gaussiana
     /*Primero decidimos el centro y la anchura de la gaussiana 
     (conviene que la anchura sea mucho menor que el pozo y que esté centrada entre la primera 
@@ -59,7 +59,7 @@ int main(){
     sigma=(double)N/50.0;
     for (j = 1; j < N-1; j++)
     {
-        phi[j][0]=exp(i*k_0*(double)j)*exp((-((double)j-x_0)*((double)j-x_0))/(2*sigma*sigma));
+        phi[j]=exp(i*k_0*(double)j)*exp((-((double)j-x_0)*((double)j-x_0))/(2*sigma*sigma));
     }
 
     //Parámetros para la resolución del sistema de ecuaciones:
@@ -74,10 +74,6 @@ int main(){
     {
         alpha[(N-2)-j]=-1.0/(A_0[(N-1)-j]+alpha[(N-1)-j]);
     }
-    for(j=0;j<N;j++)
-    {
-        cout << alpha[j] << endl;
-    }
     //-------------------------------------------------------------------------------------
 
     //--------------------------ALGORITMO EC. SCHRODINGER----------------------------------
@@ -88,33 +84,33 @@ int main(){
         //escritura de los datos
         for(j=0;j<N;j++)
         {
-            fonda << j << ", " << real(phi[j][n]) /*<< ", " << imag(phi[j][n])*/ << endl;
+            fonda << j << ", " << real(phi[j]) /*<< ", " << imag(phi[j][n])*/ << endl;
         }
         fonda << endl;
 
         //Cálculo de b
         for(j=0;j<N;j++)
         {
-            b[j][n]=4.0*i*phi[j][n]/S;
+            b[j]=4.0*i*phi[j]/S;
         }
         //Cálculo de beta
-        beta[N-1][n]=0; 
+        beta[N-1]=0; 
         for(j=0;j<=N-2;j++)
         {
-            beta[(N-2)-j][n]=(b[(N-1)-j][n]-beta[(N-1)-j][n])/(A_0[(N-1)-j]+alpha[(N-1)-j]);
+            beta[(N-2)-j]=(b[(N-1)-j]-beta[(N-1)-j])/(A_0[(N-1)-j]+alpha[(N-1)-j]);
         }
 
         //Cálculo de Xi
-        xi[0][n]=xi[N-1][n]=0;
+        xi[0]=xi[N-1]=0;
         for(j=0;j<N-1;j++)
         {
-            xi[j+1][n]=alpha[j]*xi[j][n]+beta[j][n];
+            xi[j+1]=alpha[j]*xi[j]+beta[j];
         }
 
         //Cálculo de phi en el siguiente instante de tiempo
         for(j=0;j<N;j++)
         {
-            phi[j][n+1]=xi[j][n]-phi[j][n];
+            phi[j]=xi[j]-phi[j];
         }
     }
     fonda.close();
