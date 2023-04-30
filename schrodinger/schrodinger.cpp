@@ -3,14 +3,15 @@
 #include <complex>
 #include <fstream>
 
-#define MAX 200
+#define MAX 1000
 #define PI 3.14159265
 
 using namespace std;
 
 int main(){
     //------------------------DECLARACION DE VARIABLES-------------------------------------
-    complex<double> phi[MAX]; //Solución ec. Schrodinger     ¡¡¡Dim máxima por determinar!!!
+    complex<double> phi[MAX]; //Solución ec. Schrodinger  
+    double norma; //Norma de la f. de onda
     int j,n; //posición y tiempo
     int t; //Tiempo máximo
     //Asumimos los parámetros de discretización espacial y temporal h=1 y s=1, respectivamente
@@ -32,11 +33,11 @@ int main(){
     //--------------------------CONDICIONES INICIALES--------------------------------------
     t=MAX;
     //Parámetros del pozo:
-    N=MAX; //Tamaño del pozo    ¡¡¡A DETERMINAR!!!!
-    nc=N/4.0; //# ciclos. Lo elegimos así para que haya 4 ciclos
+    N=MAX; //Tamaño del pozo  
+    nc=N/15.0; //# ciclos. Lo elegimos así para que haya 4 ciclos
 
     //Parámetros del potencial:
-    lambda=0.3; //Altura del potencial
+    lambda=0.1; //Altura del potencial
     k_0=2*PI*nc/(N*1.0);
     //Definimos el potencial
     for (j = 0; j < N; j++)
@@ -55,11 +56,18 @@ int main(){
     /*Primero decidimos el centro y la anchura de la gaussiana 
     (conviene que la anchura sea mucho menor que el pozo y que esté centrada entre la primera 
     pared y el potencial)*/
-    x_0=(double)N/6.0;
-    sigma=(double)N/50.0;
+    x_0=(double)N/4.0;
+    sigma=(double)N/16.0;
+    norma=0.0;
     for (j = 1; j < N-1; j++)
     {
         phi[j]=exp(i*k_0*(double)j)*exp((-((double)j-x_0)*((double)j-x_0))/(2*sigma*sigma));
+        norma=norma+abs(phi[j])*abs(phi[j]);
+    }
+    //Normalizamos la f. de onda para que después salga la norma cercana a 1
+    for(j=0;j<N;j++)
+    {
+        phi[j]=phi[j]/sqrt(norma);
     }
 
     //Parámetros para la resolución del sistema de ecuaciones:
@@ -78,13 +86,15 @@ int main(){
 
     //--------------------------ALGORITMO EC. SCHRODINGER----------------------------------
     ofstream fonda;
+    ofstream norm;
     fonda.open("schrodinger_data.dat");
+    norm.open("norma.txt");
     for(n=0;n<t;n++)
     {
         //escritura de los datos
         for(j=0;j<N;j++)
         {
-            fonda << j << ", " << real(phi[j]) /*<< ", " << imag(phi[j][n])*/ << endl;
+            fonda << j << ", " << real(phi[j]) << ", " << imag(phi[j]) << ", " << pow(abs(phi[j]),2) << endl;
         }
         fonda << endl;
 
@@ -107,13 +117,20 @@ int main(){
             xi[j+1]=alpha[j]*xi[j]+beta[j];
         }
 
-        //Cálculo de phi en el siguiente instante de tiempo
+        norma=0.0;//Reiniciamos la norma
+        //Cálculo de phi en el siguiente instante de tiempo y la norma
         for(j=0;j<N;j++)
         {
             phi[j]=xi[j]-phi[j];
+            norma=norma+abs(phi[j])*abs(phi[j]);
+            /*La norma es el valor absoluto al cuadrado de la f. de onda en todo el espacio,
+            por eso vamos sumando en cada posición, y al final el resultado de la norma debe
+            ser cercano a 1*/
         }
+        norm << norma << endl;
     }
     fonda.close();
+    norm.close();
 
     return 0;
 }

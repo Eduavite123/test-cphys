@@ -95,11 +95,19 @@ ax.set_ylim(ymin, ymax)
 # Representa el primer fotograma
 xs = frames_data[0][0]
 lines = list()
-for ys in frames_data[0][1:]:
-    # Info sobre la función plot: https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.plot.html)
-    line, = ax.plot(xs, ys, "-", color="blue", linewidth=1)
-    lines.append(line)
- 
+
+line, = ax.plot(xs, frames_data[0][1], "-", color="blue", linewidth=1, label='Parte real')
+lines.append(line)
+
+line, = ax.plot(xs, frames_data[0][2], "-", color="red", linewidth=1, label='Parte imaginaria')
+lines.append(line)
+
+line, = ax.plot(xs, frames_data[0][3], "-", color="black", linewidth=1, label='$|\psi|^2$')
+lines.append(line)
+
+plt.title('$\lambda$=0.1')
+plt.legend()
+plt.xlabel('Posición j')
 # Función que actualiza las curvas en la animación 
 def update(j_frame, frames_data, lines):
     xs = frames_data[j_frame][0]
