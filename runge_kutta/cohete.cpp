@@ -29,14 +29,14 @@ int main(){
     double k1[4], k2[4], k3[4], k4[4];
     double r_prima;
     double aux[4];
-    double x,y; //Posición del cohete en coordenadas cartesianas
+    double x_c,y_c; //Posición del cohete en coordenadas cartesianas
     double x_L,y_L; //Posición de la Luna en coordenadas cartesianas
     //-------------------------------------------------------------------------------------
     
     //--------------------------CONDICIONES INICIALES--------------------------------------
     //Paso de tiempo
     h=0.1;
-    tmax=10;
+    tmax=50;
     iter=tmax/h;
 
     //Aplicamos reescalado a las variables
@@ -57,13 +57,13 @@ int main(){
     for (int i = 0; i < iter; i++)
     {
         //Pasamos de coordenadas cilíndricas a cartesianas
-        x=y[0]*cos(y[1]);
-        y=y[0]*sin(y[1]); 
+        x_c=y[0]*cos(y[1]);
+        y_c=y[0]*sin(y[1]); 
 
         //Escribimos los datos en el archivo
         pos << 0.0 << ", " << 0.0 << endl; //Posición Tierra (fija)
         pos << x_L << ", " << y_L << endl; //Posición Luna
-        pos << x << ", " << y << endl;
+        pos << x_c << ", " << y_c << endl;
         pos << endl;
 
         //Evaluamos k1
@@ -75,7 +75,7 @@ int main(){
         //Un vector auxiliar facilitará el cálculo
         for (int j = 0; j < 4; j++)
         {
-            aux[j]=y[j]+k1[j]/2.0
+            aux[j]=y[j]+k1[j]/2.0;
         }
 
         //Evaluamos k2
@@ -86,7 +86,7 @@ int main(){
 
         for (int j = 0; j < 4; j++)
         {
-            aux[j]=y[j]+k2[j]/2.0
+            aux[j]=y[j]+k2[j]/2.0;
         }
 
         //Evaluamos k3
@@ -97,7 +97,7 @@ int main(){
         
         for (int j = 0; j < 4; j++)
         {
-            aux[j]=y[j]+k3[j]
+            aux[j]=y[j]+k3[j];
         }
 
         //Evaluamos k4
