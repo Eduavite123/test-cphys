@@ -9,17 +9,18 @@ using namespace std;
 #define MT 5.9736e24 //kg   //masa Tierra
 #define ML 0.07349e24 //kg  //masa Luna
 #define dTL 3.844e8 //m     //distancia Tierra-Luna
-#define w 2.6617e-6 //s^-1  //Velocidad angular Luna??????
+#define w 2.6617e-6 //s^-1  //Velocidad angular Luna
 #define RT 6.378160e6 //m   //Radio Tierra
 #define RL 1.7374e6 //m     //Radio Luna
 
-#define Delta G*MT/pow(dTL,3)
-#define mu ML/MT
+#define Delta 7.0147e-12   //G*MT/pow(dTL,3)
+#define mu 0.0123   //ML/MT
 
 double f0(double p_r);
 double f1(double r, double p_phi);
 double f2(double r, double phi, double p_phi, float t);
 double f3(double r, double phi, float t);
+double hamiltoniano(double r, double phi, double p_r, double p_phi, double m, float t);
 
 int main(){
     //------------------------DECLARACION DE VARIABLES-------------------------------------
@@ -27,33 +28,36 @@ int main(){
     //   y_0 = r     y_1 = phi     y_2 = p_r     y_3 = p_phi
     float t, h, tmax, iter; //Tiempo y pasos temporales | Tiempo máx y nº iteraciones
     double k1[4], k2[4], k3[4], k4[4];
-    double r_prima;
     double aux[4];
     double x_c,y_c; //Posición del cohete en coordenadas cartesianas
-    double x_L,y_L; //Posición de la Luna en coordenadas cartesianas
+    double x_L,y_L, phi_L; //Posición de la Luna en coordenadas cartesianas y fase inicial
+    double H, mc; //Hamiltoniano y masa del cohete
     //-------------------------------------------------------------------------------------
-    
+
     //--------------------------CONDICIONES INICIALES--------------------------------------
     //Paso de tiempo
-    h=0.1;
-    tmax=50;
-    iter=tmax/h;
+    h=60;
+    tmax=60000*6; //36e4
+    iter=tmax/(h/2);
 
     //Aplicamos reescalado a las variables
     y[0]=RT/dTL; //El cohete empieza en el radio de la Tierra
     y[1]=PI/4.0; //Ángulo inicial del cohete
-    y[2]=11200.0/dTL; //Componente radial velocidad inicial = velocidad de escape terrestre = 11.2 km/s
-    y[3]=0; //Componente angular velocidad inicial nula => Sale normal a la superficie terrestre
+    y[2]=11000.0/dTL; //Componente radial velocidad inicial = velocidad de escape terrestre = 11.2 km/s
+    y[3]=10.0/dTL; //Componente angular velocidad inicial nula => Sale normal a la superficie terrestre
     t=0;
 
     //Condiciones iniciales de la Luna
-    x_L=1.0*cos(0.0);
-    y_L=1.0*sin(0.0);
+    phi_L=0.0; //fase inicial Luna
+    x_L=1.0*cos(phi_L);
+    y_L=1.0*sin(phi_L);
     //-------------------------------------------------------------------------------------
 
     //-------------------------------RUNGE_KUTTA-------------------------------------------
     ofstream pos;
+    ofstream ham;
     pos.open("cohete_data.dat");
+    ham.open("ham_prima.dat");
     for (int i = 0; i < iter; i++)
     {
         //Pasamos de coordenadas cilíndricas a cartesianas
@@ -115,11 +119,36 @@ int main(){
         t=t+h; 
 
         //Movemos la Luna
-        x_L=1.0*cos(w*t);
-        y_L=1.0*sin(w*t);         
+        x_L=1.0*cos(phi_L+w*t);
+        y_L=1.0*sin(phi_L+w*t);    
+
+        //Calculamos el Hamiltoniano en el instante de tiempo
+        H=0;
+        mc=16000; //Masa del cohete en kg
+        H=hamiltoniano(y[0]*dTL,y[1],y[2]*mc*dTL,y[3]*mc*pow(dTL,2),mc,t);
+        ham << t/3600 << " " << H-w*y[3]*mc*pow(dTL,2) << endl;
+
+        if (y[0]>0.9) //Cuando se acerca a la Luna reducimos h para que se desvíe mejor
+        {
+            h=60;
+            i=0;
+            iter=tmax/h;
+        }
+        if (y[0]<0.9 && h==60) //Cuando se aleja de la Luna volvemos a h inicial
+        {
+            h=120;
+            i=0;
+            iter=tmax/h;
+        }
+
+        if (y[0]<RT/dTL) //Si vuelve a la Tierra, se para el ciclo
+        {
+            break;
+        }
 
     }
     pos.close();
+    ham.close();
     //-------------------------------------------------------------------------------------
     return 0;
 }
@@ -148,4 +177,12 @@ double f3(double r, double phi, float t){
     r_prima=sqrt(1+pow(r,2)-2*r*cos(phi-w*t));
     f3=-Delta*mu*r*sin(phi-w*t)/pow(r_prima,3);
     return f3;
+}
+
+double hamiltoniano(double r, double phi, double p_r, double p_phi, double m, float t){
+    double H;
+    double r_L;
+    r_L=sqrt(pow(r,2)+pow(dTL,2)-2*r*dTL*cos(phi-w*t));
+    H=pow(p_r,2)/(2*m)+pow(p_phi,2)/(2*m*pow(r,2))-G*m*MT/r-G*m*ML/(r_L);
+    return H;
 }

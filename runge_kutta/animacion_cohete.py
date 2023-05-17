@@ -51,12 +51,12 @@ file_in = "cohete_data.dat" # Nombre del fichero de datos
 file_out = "cohete" # Nombre del fichero de salida (sin extensión)
 
 # Límites de los ejes X e Y
-x_min = -1.5
-x_max = 1.5
-y_min = -1.5 
-y_max = 1.5
+x_min = -0.5
+x_max = 0.5
+y_min = -0.5 
+y_max = 0.5
 
-interval = 10 # Tiempo entre fotogramas en milisegundos !!! ESTABA A 100 AL PRINCIPIO
+interval = 0.5 # Tiempo entre fotogramas en milisegundos !!! ESTABA A 100 AL PRINCIPIO
 show_trail = True # Muestra la "estela" del planeta
 trail_width = 1 # Ancho de la estela
 save_to_file = True # False: muestra la animación por pantalla,
@@ -66,7 +66,7 @@ dpi = 150 # Calidad del vídeo de salida (dots per inch)
 # Radio del planeta, en las mismas unidades que la posición
 # Puede ser un número (el radio de todos los planetas) o una lista con
 # el radio de cada uno
-planet_radius = 0.05 
+planet_radius = [0.05,0.05,0.02]
 #planet_radius = [0.5, 0.7, 1.1]
 
 
@@ -171,6 +171,8 @@ def init_anim():
 
 # Calcula el nº de frames
 nframes = len(frames_data)
+
+plt.title('T-L-T ($p_r^0=$11.1km/s)')
 
 # Si hay más de un instante de tiempo, genera la animación
 if nframes > 1:
