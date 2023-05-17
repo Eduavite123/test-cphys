@@ -36,15 +36,15 @@ int main(){
 
     //--------------------------CONDICIONES INICIALES--------------------------------------
     //Paso de tiempo
-    h=60;
-    tmax=60000*6; //36e4
-    iter=tmax/(h/2);
+    h=30;
+    tmax=60000*4; //36e4
+    iter=tmax/(h);
 
     //Aplicamos reescalado a las variables
     y[0]=RT/dTL; //El cohete empieza en el radio de la Tierra
     y[1]=PI/4.0; //Ángulo inicial del cohete
-    y[2]=11000.0/dTL; //Componente radial velocidad inicial = velocidad de escape terrestre = 11.2 km/s
-    y[3]=10.0/dTL; //Componente angular velocidad inicial nula => Sale normal a la superficie terrestre
+    y[2]=5000.0/dTL; //Componente radial velocidad inicial = velocidad de escape terrestre = 11.2 km/s
+    y[3]=1000.0/dTL; //Componente angular velocidad inicial nula => Sale normal a la superficie terrestre
     t=0;
 
     //Condiciones iniciales de la Luna
@@ -128,7 +128,7 @@ int main(){
         H=hamiltoniano(y[0]*dTL,y[1],y[2]*mc*dTL,y[3]*mc*pow(dTL,2),mc,t);
         ham << t/3600 << " " << H-w*y[3]*mc*pow(dTL,2) << endl;
 
-        if (y[0]>0.9) //Cuando se acerca a la Luna reducimos h para que se desvíe mejor
+        /*if (y[0]>0.9) //Cuando se acerca a la Luna reducimos h para que se desvíe mejor
         {
             h=60;
             i=0;
@@ -139,12 +139,12 @@ int main(){
             h=120;
             i=0;
             iter=tmax/h;
-        }
+        }*/
 
-        if (y[0]<RT/dTL) //Si vuelve a la Tierra, se para el ciclo
+        /*if (y[0]<RT/dTL) //Si vuelve a la Tierra, se para el ciclo
         {
             break;
-        }
+        }*/
 
     }
     pos.close();
