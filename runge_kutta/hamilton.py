@@ -8,7 +8,7 @@ y=data[:,1]
 fig=plt.figure()
 ax=fig.add_subplot(111)
 ax.plot(x,y)
-#ax.set_ylim(ymin=-1.3e10,ymax=-1.5e10)
+ax.set_ylim(ymin=-1.5e10,ymax=-1.3e10)
 
 plt.xlabel('Tiempo (horas)')
 plt.ylabel('$H^\prime=H-\omega p_{\phi}$')

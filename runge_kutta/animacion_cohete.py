@@ -51,10 +51,10 @@ file_in = "cohete_data.dat" # Nombre del fichero de datos
 file_out = "cohete" # Nombre del fichero de salida (sin extensión)
 
 # Límites de los ejes X e Y
-x_min = -0.5
-x_max = 0.5
-y_min = -0.5 
-y_max = 0.5
+x_min = -1.5
+x_max = 1.5
+y_min = -1.5
+y_max = 1.5
 
 interval = 0.5 # Tiempo entre fotogramas en milisegundos !!! ESTABA A 100 AL PRINCIPIO
 show_trail = True # Muestra la "estela" del planeta
