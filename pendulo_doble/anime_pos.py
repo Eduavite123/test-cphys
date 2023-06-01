@@ -173,7 +173,7 @@ def init_anim():
 nframes = len(frames_data)
 
 #########################################################################
-plt.title('Mapa de Poincaré para $\psi$ y $\phi$')
+plt.title(r'Péndulo doble con $\theta_{1,0}=\pi, \theta_{2,0}=0$ y $H=50$')
 #########################################################################
 
 # Si hay más de un instante de tiempo, genera la animación

@@ -47,14 +47,14 @@ import numpy as np
 
 # Parámetros
 # ========================================
-file_in = "poincare.dat" # Nombre del fichero de datos
-file_out = "poincare_angulos" # Nombre del fichero de salida (sin extensión)
+file_in = "poincare_O2_dO2.dat" # Nombre del fichero de datos
+file_out = "poincare_O2_dO2" # Nombre del fichero de salida (sin extensión)
 
 # Límites de los ejes X e Y
-x_min = -4
-x_max = 4
-y_min = -15
-y_max = 3
+x_min = -15
+x_max = 3
+y_min = -11
+y_max = 10
 
 interval = 100 # Tiempo entre fotogramas en milisegundos !!! ESTABA A 100 AL PRINCIPIO
 show_trail = True # Muestra la "estela" del planeta
@@ -173,9 +173,9 @@ def init_anim():
 nframes = len(frames_data)
 
 #########################################################################
-plt.title(r'Mapa de Poincaré para $\theta_1$ y $\theta_2$ con H=50')
-plt.xlabel(r'$\theta_1$')
-plt.ylabel(r'$\theta_2$')
+plt.title(r'Mapa de Poincaré para $\theta_2$ y $\dot{\theta}_2$ con H=50')
+plt.xlabel(r'$\theta_2$')
+plt.ylabel(r'$\dot{\theta}_2$')
 #########################################################################
 
 # Si hay más de un instante de tiempo, genera la animación

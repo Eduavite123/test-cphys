@@ -19,6 +19,7 @@ int main(){
     double k1[4], k2[4], k3[4], k4[4];
     double aux[4];
     double dO1, dO2; //Velocidades angulares
+    double H; //Hamiltoniano
     //-------------------------------------------------------------------------------------
 
     //--------------------------CONDICIONES INICIALES--------------------------------------
@@ -27,18 +28,35 @@ int main(){
     tmax=50;
     iter=tmax/h;
 
-    //Posiciones y velocidades iniciales de las masas
-    y[0]=PI/10.0;
-    y[1]=PI/10.0;
-    y[2]=0.0;
-    y[3]=0.0;
+    //Posiciones y momentos iniciales de las masas
+    y[0]=PI;
+    y[1]=0.0;
+
+    //Energía fija del sistema
+    H=50.0;
+    if (H-2*g*(1-cos(y[0]))-g*(1-cos(y[2]))<0)
+    {
+        cout << "La velocidad angular inicial no es un número real. Por favor, elija una energía más alta." << endl;
+    }
+
+    //Velocidades angulares 
+    dO1=sqrt(H-2*g*(1-cos(y[0]))-g*(1-cos(y[2])));
+    dO2=0.0;  
+
+    //Momentos iniciales
+    y[2]=(2*(1+pow(sin(y[0]-y[1]),2))*dO1)/(cos(y[0]-y[1]));
+    y[3]=dO1*(1+pow(sin(y[0]-y[1]),2));
     //-------------------------------------------------------------------------------------
 
     //-------------------------------RUNGE_KUTTA-------------------------------------------
     ofstream pos;
     ofstream poin;
+    ofstream poin1;
+    ofstream poin2;
     pos.open("posiciones.dat");
     poin.open("poincare.dat");
+    poin1.open("poincare_O2_dO2.dat");
+    poin2.open("poincare_O2_dO1.dat");
     for (int i = 0; i < iter; i++)
     {
         
@@ -47,9 +65,15 @@ int main(){
         pos << sin(y[0]) << ", " << -cos(y[0]) << endl;
         pos << sin(y[0])+sin(y[1]) << ", " << -cos(y[0])-cos(y[1]) << endl;
         pos << endl; 
-        //Mapa de Poincaré
+        //Mapa de Poincaré para ángulos
         poin << y[0] << ", " << y[1] << endl;
         poin << endl;
+        //Mapa de Poincaré para O2 y dO2
+        poin1 << y[1] << ", " << f1(y[0], y[1], y[2], y[3]) << endl;
+        poin1 << endl;
+        //Mapa de Poincaré para O2 y dO1
+        poin2 << y[1] << ", " << f0(y[0], y[1], y[2], y[3]) << endl;
+        poin2 << endl;
 
         //Evaluamos k1
         k1[0]=h*f0(y[0], y[1], y[2], y[3]);
@@ -102,6 +126,8 @@ int main(){
     }
     pos.close();
     poin.close();
+    poin1.close();
+    poin2.close();
     //-------------------------------------------------------------------------------------
     return 0;
 }
