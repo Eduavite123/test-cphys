@@ -173,7 +173,7 @@ def init_anim():
 nframes = len(frames_data)
 
 #########################################################################
-plt.title(r'Péndulo doble con $\theta_{1,0}=\pi, \theta_{2,0}=0$ y $H=50$')
+plt.title(r'Péndulo doble con $\theta_{1,0}=\pi/2, \theta_{2,0}=\pi/2.001$ y $H=20$')
 #########################################################################
 
 # Si hay más de un instante de tiempo, genera la animación

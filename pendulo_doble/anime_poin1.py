@@ -173,7 +173,7 @@ def init_anim():
 nframes = len(frames_data)
 
 #########################################################################
-plt.title(r'Mapa de Poincaré para $\theta_2$ y $\dot{\theta}_2$ con H=50')
+plt.title(r'Mapa de Poincaré para $\theta_2$ y $\dot{\theta}_2$ con H=40')
 plt.xlabel(r'$\theta_2$')
 plt.ylabel(r'$\dot{\theta}_2$')
 #########################################################################

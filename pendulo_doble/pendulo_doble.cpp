@@ -29,11 +29,11 @@ int main(){
     iter=tmax/h;
 
     //Posiciones y momentos iniciales de las masas
-    y[0]=PI;
-    y[1]=0.0;
+    y[0]=PI/2.0;
+    y[1]=PI/2.001;
 
     //Energía fija del sistema
-    H=50.0;
+    H=20.0;
     if (H-2*g*(1-cos(y[0]))-g*(1-cos(y[2]))<0)
     {
         cout << "La velocidad angular inicial no es un número real. Por favor, elija una energía más alta." << endl;
@@ -53,10 +53,12 @@ int main(){
     ofstream poin;
     ofstream poin1;
     ofstream poin2;
+    ofstream lya;
     pos.open("posiciones.dat");
     poin.open("poincare.dat");
     poin1.open("poincare_O2_dO2.dat");
     poin2.open("poincare_O2_dO1.dat");
+    lya.open("lyapunov.txt");
     for (int i = 0; i < iter; i++)
     {
         
@@ -74,6 +76,8 @@ int main(){
         //Mapa de Poincaré para O2 y dO1
         poin2 << y[1] << ", " << f0(y[0], y[1], y[2], y[3]) << endl;
         poin2 << endl;
+        //Exponentes de Lyapunov
+        lya << y[1] << "    " << f1(y[0], y[1], y[2], y[3]) << endl;
 
         //Evaluamos k1
         k1[0]=h*f0(y[0], y[1], y[2], y[3]);
@@ -128,6 +132,7 @@ int main(){
     poin.close();
     poin1.close();
     poin2.close();
+    lya.close();
     //-------------------------------------------------------------------------------------
     return 0;
 }
