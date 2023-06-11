@@ -30,7 +30,7 @@ int main(){
 
     //Posiciones y momentos iniciales de las masas
     y[0]=PI/2.0;
-    y[1]=PI/2.001;
+    y[1]=PI/2.0;
 
     //Energía fija del sistema
     H=20.0;
